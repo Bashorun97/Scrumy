@@ -3,6 +3,14 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
 # Create your models here.
+
+
+class GoalStatus(models.Model):
+    status_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.status_name
+
 class ScrumyGoals(models.Model):
     goal_name = models.CharField(max_length=50)
     goal_id = models.IntegerField(max_length=50)
@@ -26,8 +34,3 @@ class ScrumyHistory(models.Model):
     def __str__(self):
         return self.created_by
 
-class GoalStatus(models.Model):
-    status_name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.status_name
