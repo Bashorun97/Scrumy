@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Model
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
@@ -13,11 +14,11 @@ class GoalStatus(models.Model):
 
 class ScrumyGoals(models.Model):
     goal_name = models.CharField(max_length=50)
-    goal_id = models.IntegerField(max_length=50)
+    goal_id = models.IntegerField()
     created_by = models.CharField(max_length=50)
     moved_by = models.CharField(max_length=50)
     owner = models.CharField(max_length=50)
-    goal_status = models.ForeignKey(GoalStatus, on_delete=models.PROTECT)
+    goal_status = models.ForeignKey(GoalStatus, on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name="user_goal", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -29,7 +30,7 @@ class ScrumyHistory(models.Model):
     moved_from = models.CharField(max_length=50)
     moved_to = models.CharField(max_length=50)
     time_of_action = models.DateField()
-    goal = models.ForeignKey(ScrumyGoals, on_delete=models.PROTECT)
+    goal = models.ForeignKey(ScrumyGoals, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.created_by
