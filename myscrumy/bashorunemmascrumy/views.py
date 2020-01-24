@@ -10,3 +10,8 @@ def get_grading_parameters(request):
 def query_filter(request):
     name = ScrumyGoals.objects.filter(goal_name="Learn Django")
     return HttpResponse(name)
+
+
+def move_goal(request, goal_id):
+    name = ScrumyGoals.objects.filter(goal_name=goal_id)
+    return HttpResponse(f'{name}')
