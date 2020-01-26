@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Django Templates Tutorial</title>
+</head>
+<body>
+	<h1>My First Template</h1>
+	<table style="width : 100%">
+		<tr>
+			<td>User</td>
+			<td>{{user}}</td>
+		</tr>
+		<tr>
+			<td>Weekly Goal</td>
+			<td>{{goal_name}}, {{goal_id}}</td>
+		</tr>
+
+		<tr>
+			<td>Daily Goals</td>
+			<td>{{goal_name}}, {{goal_id}}</td>
+
+		<tr>
+			<td>Verify Goals</td>
+			<td>{{goal_name}}, {{goal_id}}</td>
+		</tr>
+
+		<tr>
+                        <td>Done Goals</td>
+                        <td>{{goal_name}}, {{goal_id}}</td>
+                </tr>
+	</table>
+</body>
+</html>
