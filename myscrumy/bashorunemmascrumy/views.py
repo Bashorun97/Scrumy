@@ -13,5 +13,5 @@ def query_filter(request):
 
 
 def move_goal(request, goal_id):
-    name = ScrumyGoals.objects.filter(goal_name=goal_id)
+    name = ScrumyGoals.objects.get(goal_id=goal_id)
     return HttpResponse(f'{name}')

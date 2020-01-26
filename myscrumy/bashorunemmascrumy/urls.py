@@ -4,5 +4,5 @@ from . import views
 urlpatterns = [
        # path('', views.get_grading_parameters),
         path('', views.query_filter),
-        path('<int:goal_id>/move_goal', views.move_goal, name="move_goal"),
+        path('move_goal/<int:goal_id>', views.move_goal, name="move_goal"),
 ]
