@@ -8,27 +8,30 @@
 	<h1>My First Template</h1>
 	<table style="width : 100%">
 		<tr>
-			<td>User</td>
+			<th>User</th>
+			<th>Weekly Goals</th>
+			<th>Daily Goals</th>
+			<th>Verify Goals</th>
+			<th>Done Goals</th>
+		</tr>
+		{% for user in user %}
+		<tr>
 			<td>{{user}}</td>
-		</tr>
-		<tr>
-			<td>Weekly Goal</td>
-			<td>{{goal_name}}, {{goal_id}}</td>
-		</tr>
+			<td>{% for goal in weekly %} {%if goal.user.username == user.username %} {{goal}} {{goal.goal_id}} {%endif%} {%endfor%}
+			</td>
+			<td>{% for goal in daily%} {%if goal.user.username == user.username%} {{goal}}
+				{{goal.goal_id}} {%endif%} {%endfor%}
+			</td>
 
-		<tr>
-			<td>Daily Goals</td>
-			<td>{{goal_name}}, {{goal_id}}</td>
+			<td>{% for goal in verify%} {%if goal.user.username == user.username %} {{goal}}
+				{goal.goal_id} {%endif%} {%endfor%}
+			</td>
 
-		<tr>
-			<td>Verify Goals</td>
-			<td>{{goal_name}}, {{goal_id}}</td>
+			<td>{% for goal in done %} {%if goal.user.username == user.username %} {{goal}}
+				{{goal.goal_id}} {%endif%} {%endfor%}
+			</td>
 		</tr>
-
-		<tr>
-                        <td>Done Goals</td>
-                        <td>{{goal_name}}, {{goal_id}}</td>
-                </tr>
+		{%endfor%}
 	</table>
 </body>
 </html>
