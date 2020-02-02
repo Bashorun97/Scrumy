@@ -1,10 +1,8 @@
 from django.db import models
-from django.db.models import Model
-from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
+from django.forms import ModelForm, CharField, PasswordInput, Form
 
 # Create your models here.
-
 
 class GoalStatus(models.Model):
     status_name = models.CharField(max_length=50)
@@ -35,3 +33,13 @@ class ScrumyHistory(models.Model):
     def __str__(self):
         return self.created_by
 
+class SignUpForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'username', 'password']
+
+
+class CreateGoalForm(ModelForm):
+    class Meta:
+        model = ScrumyGoals
+        fields = ['goal_name', 'user']
