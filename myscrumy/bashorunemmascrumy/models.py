@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm, CharField, PasswordInput, Form
+from django import forms
 
 # Create your models here.
 
@@ -35,8 +36,12 @@ class ScrumyHistory(models.Model):
 
 class SignUpForm(ModelForm):
     class Meta:
+        confirm_password = forms.CharField(widget=forms.PasswordInput)
         model = User
         fields = ['first_name', 'last_name', 'email', 'username', 'password']
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
 
 
 class CreateGoalForm(ModelForm):
