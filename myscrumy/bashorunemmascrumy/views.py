@@ -31,13 +31,13 @@ def move_goal(request, goal_id):
 #def query_filter(request):
 #    name = ScrumyGoals.objects.filter(goal_name="Learn Django")
 #    return HttpResponse(name)
-
+'''
 def home1(request):
-   goal_name = ScrumyGoals.objects.get(goal_name="Learn Django")
 
-   dictionary = {'goal_name': goal_name.goal_name, 'goal_id':goal_name.goal_id, 'user':goal_name.user}
-   return render(request, 'bashorunemmascrumy/home.html', dictionary)
-
+    goal_name = ScrumyGoals.objects.get(goal_name="Learn Django")
+    dictionary = {'goal_name': goal_name.goal_name, 'goal_id':goal_name.goal_id, 'user':goal_name.user}
+    return render(request, 'bashorunemmascrumy/home.html', dictionary)
+    '''
 
 @login_required(login_url="/bashorunemmascrumy/accounts/login")
 def home(request):
