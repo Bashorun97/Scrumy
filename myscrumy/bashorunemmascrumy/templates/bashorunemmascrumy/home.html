@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Django Templates Tutorial</title>
+</head>
+<body>
+	<h1>My First Template</h1>
+	<table style="width : 100%">
+		<tr>
+			<th>User</th>
+			<th>Weekly Goals</th>
+			<th>Daily Goals</th>
+			<th>Verify Goals</th>
+			<th>Done Goals</th>
+		</tr>
+		{% for user in users %}
+		<tr>
+			<td>{{user}}</td>
+			<td>{% for goal in weekly %}
+				{%if goal.user.username == user.username %}
+				{{goal}}
+				<!--{{goal.goal_id}} -->
+				{%endif%}
+				{%endfor%}
+			</td>
+			<td>{% for goal in daily%}
+				{%if goal.user.username == user.username%}
+				{{goal}}
+				<!--{{goal.goal_id}} -->
+				{%endif%}
+				{%endfor%}
+			</td>
+
+			<td>{% for goal in verify%}
+				{%if goal.user.username == user.username %}
+				{{goal}}
+				<!--{{goal.goal_id}} -->
+				{%endif%}
+				{%endfor%}
+			</td>
+
+			<td>{% for goal in done %}
+				{%if goal.user.username == user.username %}
+				{{goal}}
+				<!--{{goal.goal_id}} -->
+				{%endif%}
+				{%endfor%}
+			</td>
+		</tr>
+		{%endfor%}
+	</table>
+
+	<p><a href={% url 'bashorunemmascrumy:addgoal' %}>Add A Goal </a>
+</body>
+</html>
