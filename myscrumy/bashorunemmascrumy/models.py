@@ -36,7 +36,6 @@ class ScrumyHistory(models.Model):
 
 class SignUpForm(ModelForm):
     class Meta:
-        confirm_password = forms.CharField(widget=forms.PasswordInput)
         model = User
         fields = ['first_name', 'last_name', 'email', 'username', 'password']
         widgets = {
