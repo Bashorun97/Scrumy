@@ -11,7 +11,7 @@
     <form method="POST">
         <h3>Move goal to: {{ form }} </h3>
         <p>{{ current_user }} is the current authenticated user</p>
-        <p>{{ move }}</p>
+        <p>{{ goals }} is the goal that want to be moved</p>
         <button type="submit" class="btn btn-defualt">Submit</button>
          {% csrf_token %}
      </form>

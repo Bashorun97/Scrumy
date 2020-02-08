@@ -1,4 +1,3 @@
-'''
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from bashorunemmascrumy.models import ScrumyGoals, GoalStatus
@@ -10,95 +9,86 @@ User = get_user_model()
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField()
     last_name = forms.CharField()
-    email = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control', 'placeholder':'Your Email'}))
-
+    email    = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control', 'placeholder':'Your Emaill'}))
+   
     class Meta():
         model = User
         fields = ['first_name', 'last_name', 'email', 'username', 'password1', 'password2']
 
-#Change goals
+
+# changin goals
 class DeveloperChangeGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[0:3]])
-    
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[0:3]])
     class Meta():
         model = GoalStatus
         fields = ['goal_status']
 
-class QAChangeGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[0:4]])
 
-    class Meta():
+class QAChangeGoalForm(forms.ModelForm):
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[:4]])
+
+    class Meta:
         model = GoalStatus
         fields = ['goal_status']
 
 class QAChangeGoalForm1(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[2:4]])
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[2:4]])
 
     class Meta:
         model = GoalStatus
         fields = ['goal_status']
 
 class OwnerChangeGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[:4]])
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[:4]])
 
     class Meta:
         model = GoalStatus
         fields = ['goal_status']
+
 
 class AdminChangeGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[:4]])
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[:4]])
 
     class Meta:
         model = GoalStatus
         fields = ['goal_status']
 
-# Create Goal
 
-class DeveloperCreateGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[0:1]])
 
+#create goal form
+
+class DeveloprCreateGoalForm(forms.ModelForm):
+    goal_status = ScrumyGoals()
+    goal_status = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in goal_status.order_by('id')[0:1]])
     class Meta:
         model = ScrumyGoals
-        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user']
+        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user',]
 
 class QACreateGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[0:1]])
-
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[0:1]])
     class Meta:
         model = ScrumyGoals
-        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user']
+        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user', ]
 
-class QACreateGoalForm1(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[2:4]])
-
-    class Meta:
-        model = ScrumyGoals
-        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user']
-    
 class OwnerCreateGoalForm(forms.ModelForm):
-    query_set = GoalStatus.objects.all()
-    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in query_set.order_by('id')[0:1]])
-
+    queryset = GoalStatus.objects.all()
+    goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset.order_by('id')[0:1]])
     class Meta:
         model = ScrumyGoals
-        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user']
-
-
-
+        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user', ]
 
 
 class CreateGoalForm(forms.ModelForm):
-    class Meta:
-        model = ScrumyGoals
-        fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user', 'goal_status']
+        class Meta:
+            model = ScrumyGoals
+            fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user', 'goal_status',]
 
 
 class ChangeGoalForm(forms.ModelForm):
@@ -108,4 +98,3 @@ class ChangeGoalForm(forms.ModelForm):
     class Meta:
         model = GoalStatus
         fields = ['goal_status']
-'''

@@ -6,7 +6,7 @@
 </head>
 <body>
 	<h1>My First Template</h1>
-	<h3>Logged in as {{ request.user }} in {{ current_group }} Group </h3>
+	<h3>Logged in as {{ request.user }} in {{ request.user.groups.all.0 }} Group </h3>
 	<table style="width : 100%">
 		<tr>
 			<th>User</th>

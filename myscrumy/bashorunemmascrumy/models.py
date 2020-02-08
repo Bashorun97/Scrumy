@@ -45,7 +45,7 @@ class ScrumyHistory(models.Model):
 
     def __str__(self):
         return self.created_by
-
+'''
 class SignUpForm(ModelForm):
     class Meta:
         model = User
@@ -63,3 +63,4 @@ class ChangeGoalForm(ModelForm):
     class Meta:
         model = ScrumyGoals
         fields = ['goal_name', 'user']
+'''
