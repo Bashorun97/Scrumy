@@ -6,6 +6,7 @@
 </head>
 <body>
 	<h1>My First Template</h1>
+	<h3>Logged in as {{ request.user }} in {{ current_group }} Group </h3>
 	<table style="width : 100%">
 		<tr>
 			<th>User</th>
@@ -19,38 +20,38 @@
 			<td>{{user}}</td>
 			<td>{% for goal in weekly %}
 				{%if goal.user.username == user.username %}
-				{{goal}}
-				<!--{{goal.goal_id}} -->
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
 				{%endif%}
 				{%endfor%}
 			</td>
-			<td>{% for goal in daily%}
+			<td>
+				{% for goal in daily%}
 				{%if goal.user.username == user.username%}
-				{{goal}}
-				<!--{{goal.goal_id}} -->
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
 				{%endif%}
 				{%endfor%}
 			</td>
 
-			<td>{% for goal in verify%}
+			<td>
+				{% for goal in verify%}
 				{%if goal.user.username == user.username %}
-				{{goal}}
-				<!--{{goal.goal_id}} -->
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
 				{%endif%}
 				{%endfor%}
 			</td>
 
-			<td>{% for goal in done %}
+			<td>
+				{% for goal in done %}
 				{%if goal.user.username == user.username %}
-				{{goal}}
-				<!--{{goal.goal_id}} -->
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
 				{%endif%}
 				{%endfor%}
 			</td>
+
 		</tr>
 		{%endfor%}
 	</table>
 
-	<p><a href={% url 'bashorunemmascrumy:addgoal' %}>Add A Goal </a>
+	<p><a href={% url 'bashorunemmascrumy:addgoal' %}>Add A Goal </a></p>
 </body>
 </html>

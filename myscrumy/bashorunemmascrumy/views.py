@@ -1,46 +1,17 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, Group, auth 
+from django.contrib.auth import get_user_model, login, authenticate
 from django.contrib.auth.decorators import login_required
 from bashorunemmascrumy.models import *
-from django.views.generic import TemplateView
 import random
 
 # Create your views here.
 
 @login_required(login_url="/bashorunemmascrumy/accounts/login")
-def get_grading_parameters(request):
-    return HttpResponse("This is a Scrum Application")
-
-def move_goal(request, goal_id):
-
-    dictionary = {'error': 'A record with that goal id does not exist'}
-    try:
-        goalname = ScrumyGoals.objects.get(goal_id = '%s' % goal_id)
-    except Exception as e:
-        return render(request, 'bashorunemmascrumy/exception.html', dictionary)
-    else:
-        return HttpResponse(goalname.goal_id)
-    
-    '''
-    name = ScrumyGoals.objects.get(goal_id=goal_id)
-    return HttpResponse(f'{name}')
-    '''
-    
-
-#def query_filter(request):
-#    name = ScrumyGoals.objects.filter(goal_name="Learn Django")
-#    return HttpResponse(name)
-'''
-def home1(request):
-
-    goal_name = ScrumyGoals.objects.get(goal_name="Learn Django")
-    dictionary = {'goal_name': goal_name.goal_name, 'goal_id':goal_name.goal_id, 'user':goal_name.user}
-    return render(request, 'bashorunemmascrumy/home.html', dictionary)
-    '''
-
-@login_required(login_url="/bashorunemmascrumy/accounts/login")
 def home(request):
+    this_user = request.user
+    current_group = Group.objects.get(user=this_user)
     goal = ScrumyGoals.objects.get(goal_name="Keep Learning Django")
 
     all_users = User.objects.all()
@@ -57,7 +28,7 @@ def home(request):
     goals_done = done_goals.scrumygoals_set.all()
 
     
-    dictionary = {'users': all_users, 'weekly': goals_weekly, 'daily': goals_daily, 'verify': goals_verify, 'done': goals_done}
+    dictionary = {'users': all_users, 'weekly': goals_weekly, 'daily': goals_daily, 'verify': goals_verify, 'done': goals_done, 'current_group':current_group}
     return render(request, "bashorunemmascrumy/home.html", dictionary)
 
 
@@ -87,7 +58,7 @@ def sign_up(request):
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            user = User.objects.create_user (username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+            user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
             user.save()
             print('signup successful')
             new_user = User.objects.get(username=username)
@@ -100,22 +71,100 @@ def sign_up(request):
         form
     return render(request, 'registration/signup.html', {'form':form})
 
+
+@login_required(login_url="/bashorunemmascrumy/accounts/login")
+def get_grading_parameters(request):
+    return HttpResponse("This is a Scrum Application")
+
+@login_required(login_url="bashorunemmascrumy/accounts/login")
+def move_goal(request, goal_id):
+ 
+    form = ChangeGoalForm()
+    this_user = request.user
+    current_group = Group.objects.get(user=this_user)
+
+    if request.method == 'POST':
+        form = ChangeGoalForm(request.POST)
+
+        if form.is_valid():
+            status = form.cleaned_data['goal_status']
+            username = form.cleaned_data['user']
+            status_type = GoalStatus.objects.get(status_name=status)
+            current_user = User.objects.get(username = username)
+            done_goal = GoalStatus.objects.get(status_name = 'Done Goal')
+            weeklygoal = GoalStatus.objects.get(status_name = 'Weekly Goal')
+            move_goal = form.save(commit=False)
+
+            if this_user.groups.filter(name = 'Developer').exists() == True:
+                if this_user != current_user:
+                    return HttpResponse('Youre not permitted to move goals for other users')
+                else:
+                    if move_goal.goal_status == done_goal:
+                        return HttpResponse('You are not allowed to move your goals to done')
+                    else:
+                        current_goals = ScrumyGoals.objects.get(goal_id = goal_id)
+                        current_goals.goal_status = status_type
+                        current_goals.user = current_user
+                        current_goals.save()
+                        return HttpResponseRedirect('home')
+
+            elif this_user.groups.filter(name = 'Quality Assurance').exists() == True:
+                if this_user == current_user:
+                    current_goals = ScrumyGoals.objects.get(goal_id = goal_id)
+                    current_goals.goal_status = status_type
+                    current_goals.user = current_user
+                    current_goals.save()
+                    return HttpResponseRedirect('home')
+                else:
+                    current_goals = ScrumyGoals.objects.get(goal_id = goal_id)
+                    ver_goal = GoalStatus.objects.get(status_name = 'Verify Goal')
+                    current_goals.goal_status = status_based
+                    current_goals.user = current_user
+                    current_goals.save()
+                    return HttpResponseRedirect('home')
+
+            elif this_user.groups.filter(name = 'Admin').exists() == True:
+                current_goals = ScrumyGoals.objects.filter(user = request.user)[0]
+                current_goals = ScrumyGoals.objects.get(goal_id = goal_id)
+                current_goals.goal_status = status_type
+                current_goals.user = current_user
+                current_goals.save()
+                return HttpResponseRedirect('home')
+
+            elif this_user.groups.filter(name = 'Owner').exists() == True:
+                if this_user != current_user:
+                    return HttpResponse('Youre not permitted to move goals for other users')
+                else:
+                    current_goals = ScrumyGoals.objects.get(goal_id = goal_id)
+                    current_goals.goal_status = status_type
+                    current_goals.user = current_user
+                    current_goals.save()
+                    return HttpResponseRedirect('home')
+            else:
+                return HttpResponse('The group you specified does not exist')
+
+    context = {
+        'move':form
+    }
+
+    return render (request, 'bashorunemmascrumy/movegoal.html', context)
+
 @login_required(login_url="/bashorunemmascrumy/accounts/login")
 def add_goal(request):
     form = CreateGoalForm()
+
     if request.method == 'POST':
         form = CreateGoalForm(request.POST)
         track = list(range(1000, 9999))
         random_number = random.sample(track, k=1)
         weeklygoal = GoalStatus.objects.get(status_name="Weekly Goal")
-
         for i in random_number:
             value = i
+
         if form.is_valid():
             username = form.cleaned_data['user']
             goal_name = form.cleaned_data['goal_name']
             user = User.objects.get(username=username)
-
             add_goal = form.save(commit=False)
             add_goal.goal_id = value
             add_goal.created_by = user.username
@@ -123,11 +172,13 @@ def add_goal(request):
             add_goal.owner = user.username
             add_goal.goal_status = weeklygoal
             add_goal.save()
+
             return HttpResponseRedirect('home')
 
-    context = {'create_goal': form }
-
-    return render(request, 'bashorunemmascrumy/addgoal.html', context)
+    context = {
+        'creategoal':form
+    }
+    return render(request, 'bashorunemmascrumy/add.html', context)
 
 def signupsuccess(request):
     return render(request, 'bashorunemmascrumy/signupsuccess.html')
