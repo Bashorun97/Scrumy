@@ -59,8 +59,6 @@ class AdminChangeGoalForm(forms.ModelForm):
         model = GoalStatus
         fields = ['goal_status']
 
-
-
 #create goal form
 
 class DeveloprCreateGoalForm(forms.ModelForm):
