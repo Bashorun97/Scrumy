@@ -20,14 +20,14 @@
 			<td>{{user}}</td>
 			<td>{% for goal in weekly %}
 				{%if goal.user.username == user.username %}
-				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a> | {{goal.goal_id}}
 				{%endif%}
 				{%endfor%}
 			</td>
 			<td>
 				{% for goal in daily%}
 				{%if goal.user.username == user.username%}
-				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a> | {{goal.goal_id}}
 				{%endif%}
 				{%endfor%}
 			</td>
@@ -35,7 +35,7 @@
 			<td>
 				{% for goal in verify%}
 				{%if goal.user.username == user.username %}
-				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a> | {{goal.goal_id}}
 				{%endif%}
 				{%endfor%}
 			</td>
@@ -43,7 +43,7 @@
 			<td>
 				{% for goal in done %}
 				{%if goal.user.username == user.username %}
-				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a>
+				<a href={% url 'bashorunemmascrumy:movegoal' goal.goal_id %}>{{goal}}</a> | {{goal.goal_id}}
 				{%endif%}
 				{%endfor%}
 			</td>

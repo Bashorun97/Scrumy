@@ -59,3 +59,14 @@ def send_message(request):
     for connects in connections:
         _send_to_connection(connects.connection_id, data)
     return JsonResponse({"message":"successfully sent"}, status=200)
+
+def send_message(request):
+    body = _parse_body(request.body)
+    ChatMessage.objects.create(
+        username=body['body']["username"], message=body['body']["message"], timestamp=body['body']["timestamp"]
+    )
+    connections = [i.connection_id for i in Connections.objects.all()]
+    data = {'messages':[body]}
+    for connection in connections:
+        _send_to_connection(connection, data)
+    return JsonResponse('successfully sent', status=200, safe=False)
