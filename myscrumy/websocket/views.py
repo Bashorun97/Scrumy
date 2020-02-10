@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from websocket.models import Connections, ChatMessage
 import boto3
-# Create your views here.
+#Create your views here.
 
 @csrf_exempt
 def test(request):
@@ -22,12 +22,13 @@ def connect(request):
     connect.save()
     return JsonResponse({'message':'connect successfully'}, status=200)
 
+@csrf_exempt
 def disconnect(request):
     body = _parse_body(request.body)
     connection_id = body['connectionId']
-    delete_id = Connections.objects.get(connection_id=connection_id)
-    delete_id.delete()
-    return JsonResponse({'message':'disconnected successfully'}, status=200)
+    Connections.objects.get(connection_id=connection_id).delete()
+    return JsonResponse('disconnect successfully', status=200, safe=False)
+
 
 def _send_to_connection(connection_id, data):
     gatewayapi = boto3.client(
@@ -60,13 +61,31 @@ def send_message(request):
         _send_to_connection(connects.connection_id, data)
     return JsonResponse({"message":"successfully sent"}, status=200)
 
-def send_message(request):
+
+#@csrf_exempt
+#def send_message(request):
     body = _parse_body(request.body)
-    ChatMessage.objects.create(
-        username=body['body']["username"], message=body['body']["message"], timestamp=body['body']["timestamp"]
-    )
-    connections = [i.connection_id for i in Connections.objects.all()]
-    data = {'messages':[body]}
-    for connection in connections:
-        _send_to_connection(connection, data)
+#    ChatMessage.objects.create(
+#        username=body['body']["username"], message=body['body']["message"], timestamp=body['body']["timestamp"]
+#    )
+#    connections = [i.connection_id for i in Connections.objects.all()]
+#    data = {'messages':[body]}
+#    for connection in connections:
+#       _send_to_connection(connection, data)
+#    return JsonResponse('successfully sent', status=200, safe=False)
+
+
+@csrf_exempt
+def get_recent_messages(request):
+    body = _parse_body(request.body)
+    connectionId = body['connectionId']
+    connection_id = Connections.objects.get(connection_id=connectionId).connection_id
+    messages = list(reversed(ChatMessage.objects.all()))
+    if len(messages) > 5:
+        data = {'messages':[{'username':chat_message.username, 'message':chat_message.message,
+        'timestamp':chat_message.timestamp} for chat_message in messages[:5]]}
+    else:
+        data = {'messages':[{'username':chat_message.username, 'message':chat_message.message,
+        'timestamp':chat_message.timestamp} for chat_message in messages]}
+    _send_to_connection(connection_id, data )
     return JsonResponse('successfully sent', status=200, safe=False)

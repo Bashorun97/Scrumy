@@ -120,4 +120,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/bashorunemmascrumy/home'
-APPEND_SLASH=False
