@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Connection(models.Model):
+class Connections(models.Model):
     connection_id = models.CharField(max_length=255)
 
 class ChatMessage(models.Model):
