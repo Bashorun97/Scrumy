@@ -64,7 +64,7 @@ def send_message(request):
 
 #@csrf_exempt
 #def send_message(request):
-    body = _parse_body(request.body)
+#    body = _parse_body(request.body)
 #    ChatMessage.objects.create(
 #        username=body['body']["username"], message=body['body']["message"], timestamp=body['body']["timestamp"]
 #    )
