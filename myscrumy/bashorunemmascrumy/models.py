@@ -1,22 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User, Group, Permission
+from django.contrib.auth.models import User
 from django.forms import ModelForm, CharField, PasswordInput, Form
 from django import forms
-'''
+
 # Create your models here.
 
-dev_grp = Group.objects.get(pk=1)
-admin_grp = Group.objects.get(name ="Admin")
-qa_grp = Group.objects.get(name ="Quality Assurance")
-owner_grp = Group.objects.get(name ="Owner")
-
-# === PERMISSION ===
-
-admin_perm = Permission.objects.all()
-dev_perm = Permission.objects.get(name='Can add scrumy goals')
-qa_perm = Permission.objects.get(name='Can change goal status')
-owner_perm = Permission.objects.get(name='Can add scrumy goals')
-'''
 class GoalStatus(models.Model):
     status_name = models.CharField(max_length=50)
 
@@ -54,12 +42,8 @@ class SignUpForm(ModelForm):
             'password': forms.PasswordInput(),
         }
 
-class CreateGoalForm(ModelForm):
-    class Meta:
-        model = ScrumyGoals
-        fields = ['goal_name', 'user']
 
-class MoveMyGoalForm(ModelForm):
+class CreateGoalForm(ModelForm):
     class Meta:
         model = ScrumyGoals
         fields = ['goal_name', 'user']

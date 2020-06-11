@@ -11,11 +11,11 @@ urlpatterns = [
         path('', views.get_grading_parameters),
         path('accounts/signup', views.sign_up, name='signup'),
         path('login', views.login, name='login'),
-        path('movegoal/<int:goal_id>', views.move_goal, name="movegoal"),
+        path('movegoal/<int:goal_id>', views.move_goal, name="move_goal"),
         path('addgoal', views.add_goal, name='addgoal'),
         path('home', views.home),
+        #path('home1', views.home1),
         path('accounts/', include('django.contrib.auth.urls'), name='login'),
         path('accounts/signupsuccess', views.signupsuccess, name='signupsuccess')
        # path('', views.index, name='index')
 ]
-

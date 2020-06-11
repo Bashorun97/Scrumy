@@ -17,6 +17,5 @@ from django.contrib import admin
 from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('bashorunemmascrumy/', include('bashorunemmascrumy.urls', namespace='bashorunemmascrumy')),
-    path('websocket/', include('websocket.urls')),
+    path('bashorunemmascrumy/', include('bashorunemmascrumy.urls', namespace='bashorunemmascrumy'))
 ]

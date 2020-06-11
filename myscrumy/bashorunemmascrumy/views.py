@@ -1,13 +1,43 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, Group, auth 
-from django.contrib.auth import get_user_model, login, authenticate
 from django.contrib.auth.decorators import login_required
 from bashorunemmascrumy.models import *
-from bashorunemmascrumy.forms import *
+from django.views.generic import TemplateView
 import random
 
 # Create your views here.
+
+@login_required(login_url="/bashorunemmascrumy/accounts/login")
+def get_grading_parameters(request):
+    return HttpResponse("This is a Scrum Application")
+
+def move_goal(request, goal_id):
+
+    dictionary = {'error': 'A record with that goal id does not exist'}
+    try:
+        goalname = ScrumyGoals.objects.get(goal_id = '%s' % goal_id)
+    except Exception as e:
+        return render(request, 'bashorunemmascrumy/exception.html', dictionary)
+    else:
+        return HttpResponse(goalname.goal_id)
+    
+    '''
+    name = ScrumyGoals.objects.get(goal_id=goal_id)
+    return HttpResponse(f'{name}')
+    '''
+    
+
+#def query_filter(request):
+#    name = ScrumyGoals.objects.filter(goal_name="Learn Django")
+#    return HttpResponse(name)
+'''
+def home1(request):
+
+    goal_name = ScrumyGoals.objects.get(goal_name="Learn Django")
+    dictionary = {'goal_name': goal_name.goal_name, 'goal_id':goal_name.goal_id, 'user':goal_name.user}
+    return render(request, 'bashorunemmascrumy/home.html', dictionary)
+    '''
 
 @login_required(login_url="/bashorunemmascrumy/accounts/login")
 def home(request):
@@ -53,11 +83,11 @@ def sign_up(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
+            password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+            user = User.objects.create_user (username=username, password=password, email=email, first_name=first_name, last_name=last_name)
             user.save()
             print('signup successful')
             new_user = User.objects.get(username=username)
@@ -70,159 +100,34 @@ def sign_up(request):
         form
     return render(request, 'registration/signup.html', {'form':form})
 
-
 @login_required(login_url="/bashorunemmascrumy/accounts/login")
-def get_grading_parameters(request):
-    return HttpResponse("This is a Scrum Application")
+def add_goal(request):
+    form = CreateGoalForm()
+    if request.method == 'POST':
+        form = CreateGoalForm(request.POST)
+        track = list(range(1000, 9999))
+        random_number = random.sample(track, k=1)
+        weeklygoal = GoalStatus.objects.get(status_name="Weekly Goal")
 
-@login_required(login_url="bashorunemmascrumy/accounts/login")
-def add_goal(request, *args, **kwargs):
-    dev = User.objects.filter(groups__name__in=['Developer'])
-    qa = User.objects.filter(groups__name__in=['Quality Assurance'])
-    admin = User.objects.filter(groups__name__in=['Admin'])
-    own = User.objects.filter(groups__name__in=['Owner'])
-    if request.user in dev:
-        form = DeveloprCreateGoalForm()
-        dictionary = {'form' : form}
-        if request.method =='POST':
-            form = DeveloprCreateGoalForm(request.POST)
-            if form.is_valid():
-                add_goal = ScrumyGoals()
-                add_goal = form.save(commit = False)
-                add_goal.goal_id = random.randint(1000, 9999)
-                add_goal.goal_status = GoalStatus.objects.get(status_name="Weekly Goal")
-                add_goal.save()
-                return redirect  ("/bashorunemmascrumy/home")       
-            return HttpResponse("Invalid credentials provided, please fill out all fields")
-        else:
-            form = DeveloprCreateGoalForm()
-            return render (request, 'bashorunemmascrumy/addgoal.html', dictionary)
-    
-        
-    elif request.user in qa:
-        form = QACreateGoalForm()
-        dictionary = {'form' : form}
-        if request.method =='POST':
-            form = QACreateGoalForm(request.POST)
-            if form.is_valid():
-                add_goal = ScrumyGoals()
-                add_goal = form.save(commit = False)
-                add_goal.goal_id = random.randint(1000, 9999)
-                add_goal.goal_status = GoalStatus.objects.get(status_name="Weekly Goal")
-                add_goal.save()
-                add_goal.save()
-                return redirect  ("/bashorunemmascrumy/home")       
-            return HttpResponse("Invalid credentials provided, please fill out all fields")
-        else:
-            form = QACreateGoalForm()
-    
-        return render (request, 'bashorunemmascrumy/addgoal.html', dictionary)
-    elif request.user in admin:
-        form = CreateGoalForm()
-        dictionary = {'form' : form}
-        if request.method =='POST':
-            form = CreateGoalForm(request.POST)
-            if form.is_valid():
-                add_goal = ScrumyGoals()
-                add_goal = form.save(commit = False)
-                add_goal.goal_id = random.randint(1000, 9999)
-                add_goal.save()
-                return redirect  ("/bashorunemmascrumy/home")       
-            return HttpResponse("Invalid credentials provided, please fill out all fields")
-        else:
-            form = CreateGoalForm()
-    
-        return render (request, 'bashorunemmascrumy/addgoal.html', dictionary)
-    elif request.user in own:
-        form = CreateGoalForm()
-        dictionary = {'form' : form}
-        if request.method =='POST':
-            form = CreateGoalForm(request.POST)
-            if form.is_valid():
-                add_goal = ScrumyGoals()
-                add_goal = form.save(commit = False)
-                add_goal.goal_id = random.randint(1000, 9999)
-                add_goal.save()
-                return redirect  ("/bashorunemmascrumy/home")       
-            return HttpResponse("Invalid credentials provided, please fill out all fields")
-        else:
-            form = CreateGoalForm()
-    
-        return render (request, 'bashorunemmascrumy/addgoal.html', dictionary)
+        for i in random_number:
+            value = i
+        if form.is_valid():
+            username = form.cleaned_data['user']
+            goal_name = form.cleaned_data['goal_name']
+            user = User.objects.get(username=username)
 
-@login_required(login_url="bashorunemmascrumy/accounts/login")
-def move_goal(request, goal_id):
-    current_user = request.user
-    usr_grp = request.user.groups.all()[0]
-    print(usr_grp)
-    goals = get_object_or_404(ScrumyGoals, goal_id=goal_id)
-    if usr_grp == Group.objects.get(name='Developer') and current_user == goals.user:
-        if request.method == 'POST':
-            form = DeveloperChangeGoalForm(request.POST)
-            if form.is_valid():
-                selected_status = form.save(commit=False)
-                selected = GoalStatus.objects.all()
-                selected = form.cleaned_data['goal_status']
-                choice = GoalStatus.objects.get(id=int(selected))
-                goals.goal_status = choice
-                goals.save()
-                return redirect("/bashorunemmascrumy/home")
-        else:
-            form = DeveloperChangeGoalForm()
-        
+            add_goal = form.save(commit=False)
+            add_goal.goal_id = value
+            add_goal.created_by = user.username
+            add_goal.moved_by = user.username
+            add_goal.owner = user.username
+            add_goal.goal_status = weeklygoal
+            add_goal.save()
+            return HttpResponseRedirect('home')
 
-    elif usr_grp == Group.objects.get(name='Quality Assurance') and current_user == goals.user:
-        if request.method == 'POST':
-            form = QAChangeGoalForm(request.POST)
-            if form.is_valid():
-                selected_status = form.save(commit=False)
-                selected = form.cleaned_data['goal_status']
-                # get_status = selected_status.goal_status
-                choice = GoalStatus.objects.get(id=int(selected))
-                goals.goal_status = choice
-                goals.save()
-                return redirect ("/bashorunemmascrumy/home")
-        else:
-            form = QAChangeGoalForm()
-    elif usr_grp == Group.objects.get(name='Quality Assurance') and current_user != goals.user:
-        print(current_user != goals.user)
-        if request.method == 'POST':
-            form = QAChangeGoalForm1(request.POST)
-            if form.is_valid():
-                selected_status = form.save(commit=False)
-                selected = form.cleaned_data['goal_status']
-                choice = GoalStatus.objects.get(id=int(selected))
-                goals.goal_status = choice
-                goals.save()
-                return redirect ("/bashorunemmascrumy/home")
-        form = QAChangeGoalForm1()
-    elif usr_grp == Group.objects.get(name='Owner') and current_user == goals.user:
-        if request.method == 'POST':
-            form = OwnerChangeGoalForm(request.POST)
-            if form.is_valid():
-                selected_status = form.save(commit=False)
-                selected = form.cleaned_data['goal_status']
-                choice = GoalStatus.objects.get(id=int(selected))
-                goals.goal_status = choice
-                goals.save()
-                return redirect ("/bashorunemmascrumy/home")
-        form = OwnerChangeGoalForm()
+    context = {'create_goal': form }
 
-    elif usr_grp == Group.objects.get(name='Admin'):
-        if request.method == 'POST':
-            form = AdminChangeGoalForm(request.POST)
-            if form.is_valid():
-                selected_status = form.save(commit=False)
-                selected = form.cleaned_data['goal_status']
-                choice = GoalStatus.objects.get(id=int(selected))
-                goals.goal_status = choice
-                goals.save()
-                return redirect ("/bashorunemmascrumy/home")
-    else:
-        return HttpResponse('You are not authorised to move this goal')
-    form = AdminChangeGoalForm()
-    return render(request, 'bashorunemmascrumy/movegoal.html',
-                  {'form': form, 'goals': goals, 'current_user': current_user})
+    return render(request, 'bashorunemmascrumy/addgoal.html', context)
 
 def signupsuccess(request):
     return render(request, 'bashorunemmascrumy/signupsuccess.html')
