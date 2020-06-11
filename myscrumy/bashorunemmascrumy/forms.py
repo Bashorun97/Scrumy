@@ -83,13 +83,6 @@ class OwnerCreateGoalForm(forms.ModelForm):
         model = ScrumyGoals
         fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user', ]
 
-
-class CreateGoalForm(forms.ModelForm):
-        class Meta:
-            model = ScrumyGoals
-            fields = ['goal_name', 'created_by', 'moved_by', 'owner', 'user', 'goal_status',]
-
-
 class ChangeGoalForm(forms.ModelForm):
     queryset = GoalStatus.objects.all()
     goal_status = forms.ChoiceField(choices=[(choice.pk, choice) for choice in queryset[:3]])
